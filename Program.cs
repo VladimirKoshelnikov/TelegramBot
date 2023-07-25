@@ -19,10 +19,14 @@ namespace TelegramBot{
         
         static AppSettings BuildAppSettings()
         {
-            return new AppSettings()
+            
+             using (StreamReader sr = new StreamReader("BotToken.txt"))
             {
-                BotToken = "6688591412:AAEikwIyyhCidJfkcbVBxp7jsya0SIih2Pk"
-            };
+                return new AppSettings() 
+                {
+                    BotToken = sr.ReadLine()    // операции с fstream
+                };  
+            }
         }
         public static async Task Main()
             {
@@ -42,7 +46,7 @@ namespace TelegramBot{
  
         static void ConfigureServices(IServiceCollection services)
         {
-            AppSettings appSettings = new AppSettings();
+            AppSettings appSettings = BuildAppSettings();
             // Подключаем контроллеры
             services.AddTransient<DefaultMessageController>();
             services.AddTransient<VoiceMessageController>();

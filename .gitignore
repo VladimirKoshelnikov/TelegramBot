@@ -470,3 +470,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Config Data
+BotToken.txt
