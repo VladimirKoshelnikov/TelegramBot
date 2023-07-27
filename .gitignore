@@ -473,3 +473,7 @@ $RECYCLE.BIN/
 
 # Config Data
 BotToken.txt
+
+#Converter and speech model
+FFmpeg-win64/
+Speech-models/

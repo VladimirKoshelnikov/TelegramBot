@@ -10,12 +10,13 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Hosting;
 using TelegramBot.Controllers;
+using TelegramBot.Configuration;
 
 namespace TelegramBot
 {
     internal class Bot : BackgroundService
     {
-                /// <summary>
+        /// <summary>
         /// объект, отвеающий за отправку сообщений клиенту
         /// </summary>
         private ITelegramBotClient _telegramClient;
@@ -24,6 +25,7 @@ namespace TelegramBot
         private VoiceMessageController _voiceMessageController;
         private TextMessageController _textMessageController;
         private DefaultMessageController _defaultMessageController;
+        
          
         
         public Bot(
@@ -31,7 +33,8 @@ namespace TelegramBot
             InlineKeyboardController inlineKeyboardController,
             VoiceMessageController voiceMessageController,
             TextMessageController textMessageController,
-            DefaultMessageController defaultMessageController)
+            DefaultMessageController defaultMessageController
+            )
         {
             _telegramClient = telegramClient;
             _inlineKeyboardController = inlineKeyboardController;
@@ -62,7 +65,7 @@ namespace TelegramBot
             if (update.Type == UpdateType.Message)
             {
                 switch (update.Message!.Type){
-                    case MessageType.Voice:
+                     case MessageType.Voice:
                         await _voiceMessageController.Handle(update.Message, cancellationToken);
                         return;
                     case MessageType.Text:
@@ -72,9 +75,6 @@ namespace TelegramBot
                         await _defaultMessageController.Handle(update.Message, cancellationToken);
                         return; 
                 }
-                Console.WriteLine($"Получено сообщение {update.Message.Text}");
-                await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id, $"Вы отправили сообщение {update.Message.Text}", cancellationToken: cancellationToken);
-                return;
             }
         }
         Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

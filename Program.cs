@@ -13,6 +13,7 @@ using TelegramBot.Controllers;
 using TelegramBot.Models;
 using TelegramBot.Services;
 using TelegramBot.Configuration;
+using TelegramBot.Extentions;
 
 namespace TelegramBot{
     public class Program{
@@ -20,14 +21,21 @@ namespace TelegramBot{
         static AppSettings BuildAppSettings()
         {
             
-             using (StreamReader sr = new StreamReader("BotToken.txt"))
+            using (StreamReader sr = new StreamReader("BotToken.txt"))
             {
                 return new AppSettings() 
                 {
-                    BotToken = sr.ReadLine()    // операции с fstream
+                    DownloadsFolder = "C:\\Users\\Владимир\\Downloads",
+                    BotToken = sr.ReadLine(),  
+                    AudioFileName = "audio",
+                    InputAudioFormat = "ogg",
+                    OutputAudioFormat = "wav",
+                    AudioBitrate = 64000f
+                    
                 };  
             }
         }
+
         public static async Task Main()
             {
                 Console.OutputEncoding = Encoding.Unicode;
@@ -47,6 +55,7 @@ namespace TelegramBot{
         static void ConfigureServices(IServiceCollection services)
         {
             AppSettings appSettings = BuildAppSettings();
+            services.AddSingleton(BuildAppSettings());
             // Подключаем контроллеры
             services.AddTransient<DefaultMessageController>();
             services.AddTransient<VoiceMessageController>();
@@ -54,10 +63,12 @@ namespace TelegramBot{
             services.AddTransient<InlineKeyboardController>();
             
             services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddSingleton<IFileHandler, AudioFileHandler>();
             // Регистрируем объект TelegramBotClient c токеном подключения
             services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient(appSettings.BotToken));
             // Регистрируем постоянно активный сервис бота
             services.AddHostedService<Bot>();
+            Console.WriteLine(DirectoryExtentions.GetSolutionRoot());
         }
     }
 }
