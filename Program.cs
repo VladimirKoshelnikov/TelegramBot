@@ -25,7 +25,7 @@ namespace TelegramBot{
             {
                 return new AppSettings() 
                 {
-                    DownloadsFolder = "C:\\Users\\Владимир\\Downloads",
+                    DownloadsFolder = "",
                     BotToken = sr.ReadLine(),  
                     AudioFileName = "audio",
                     InputAudioFormat = "ogg",
